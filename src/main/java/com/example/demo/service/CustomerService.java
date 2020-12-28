@@ -11,5 +11,4 @@ public interface CustomerService {
     void delete(Long id);
 
     Page findBySpecification();
-
 }
