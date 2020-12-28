@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Customer;
 import com.example.demo.entity.LinkMan;
+import com.example.demo.entity.Role;
 import com.example.demo.service.CustomerService;
 import com.example.demo.service.impl.CustomerImpl;
 import com.example.demo.service.impl.LinkManImpl;
+import com.example.demo.service.impl.RoleImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ public class CustomerController {
     CustomerImpl customerImpl;
     @Autowired
     LinkManImpl linkManImpl;
+    @Autowired
+    RoleImpl roleImpl;
 
     @Transactional
     @Rollback(value = false)
@@ -76,6 +80,23 @@ public class CustomerController {
     @RequestMapping("queryBySpecification")
     Page queryBySpecification() {
         return customerImpl.findBySpecification();
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    @RequestMapping("manyToManySave")
+    void manyToManySave() {
+        Customer customer = new Customer();
+        customer.setCustId(6l);
+        Role role = new Role();
+        role.setRoleName("教师");
+        roleImpl.save(role);
+        customer.getRoles().add(role);
+        role = new Role();
+        role.setRoleName("程序员");
+        roleImpl.save(role);
+        customer.getRoles().add(role);
+        customerImpl.save(customer);
     }
 
 }

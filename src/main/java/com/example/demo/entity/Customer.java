@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ public class Customer {
     private Long custId;
     @Column(name = "name")
     private String name;
+    @Column(name="sign_date")
+    private Date signDate;
     @OneToMany(targetEntity = LinkMan.class)
     @JoinColumn(name = "lkm_cust_id", referencedColumnName = "cust_id")
     private Set<LinkMan> linkMEN = new HashSet<>();
@@ -66,5 +69,13 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", linkMEN=" + linkMEN.toString() +
                 '}';
+    }
+
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(Date signDate) {
+        this.signDate = signDate;
     }
 }
