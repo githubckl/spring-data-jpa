@@ -69,11 +69,13 @@ public class CustomerController {
         Customer customer = customerImpl.findOne(2l);
         Set<LinkMan> set = customer.getLinkMEN();
         System.out.println(set.toArray());
-    }@Transactional
+    }
+
+    @Transactional
     @Rollback(value = false)
     @RequestMapping("queryBySpecification")
     Page queryBySpecification() {
-      return  customerImpl.findBySpecification();
+        return customerImpl.findBySpecification();
     }
 
 }

@@ -21,6 +21,20 @@ public class Customer {
     @JoinColumn(name = "lkm_cust_id", referencedColumnName = "cust_id")
     private Set<LinkMan> linkMEN = new HashSet<>();
 
+    @ManyToMany(targetEntity = Role.class)
+    @JoinTable(name = "customer_role",joinColumns = {@JoinColumn(name = "cust_id",referencedColumnName = "cust_id"),
+
+    },inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "role_id")})
+     private Set<Role>roles=new HashSet<>();
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public Set<LinkMan> getLinkMEN() {
         return linkMEN;
     }
