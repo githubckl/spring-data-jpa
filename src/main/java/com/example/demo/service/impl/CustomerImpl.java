@@ -66,22 +66,24 @@ public class CustomerImpl implements CustomerService {
 
     @Override
     public Page selectiveSpecification(Long id,String name,String address) {
-        Specification specification =(root,query,cb) ->{
+        Specification specification =new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder criteriaBuilder) {
+
                 List<Predicate> predList = new LinkedList<>();
                 if (id != null) {
-                    predList.add(cb.equal(root.get("custId").as(Integer.class), id));
+                    predList.add(criteriaBuilder.equal(root.get("custId").as(Integer.class), id));
                 }
                 if (name != null) {
-                    predList.add(cb.like(root.get("name").as(String.class), "%"+name+"%"));
+                    predList.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
                 }
                 if (address != null) {
-                    predList.add(cb.like(root.get("address").as(String.class),"%"+ address+"%"));
+                    predList.add(criteriaBuilder.like(root.get("address").as(String.class), "%" + address + "%"));
                 }
                 Predicate[] predArray = new Predicate[predList.size()];
                 predList.toArray(predArray);
-                CriteriaQuery where = query.where(predArray);
-                return null;
-
+                return criteriaBuilder.and(predArray);
+            }
         };
         Sort sort = Sort.by(Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(0, 4, sort);
