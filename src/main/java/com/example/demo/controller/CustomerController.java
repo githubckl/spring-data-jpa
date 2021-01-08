@@ -84,6 +84,16 @@ public class CustomerController {
 
     @Transactional
     @Rollback(value = false)
+    @RequestMapping("selectiveSpecification")
+    Page selectiveSpecification(Long id,
+                                String name,
+                                String address
+                                ) {
+        return customerImpl.selectiveSpecification(id, name, address);
+    }
+
+    @Transactional
+    @Rollback(value = false)
     @RequestMapping("manyToManySave")
     void manyToManySave() {
         Customer customer = new Customer();

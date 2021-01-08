@@ -16,6 +16,8 @@ import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class CustomerImpl implements CustomerService {
@@ -62,5 +64,27 @@ public class CustomerImpl implements CustomerService {
         return customerDao.findAll(specification, pageable);
     }
 
+    @Override
+    public Page selectiveSpecification(Long id,String name,String address) {
+        Specification specification =(root,query,cb) ->{
+                List<Predicate> predList = new LinkedList<>();
+                if (id != null) {
+                    predList.add(cb.equal(root.get("custId").as(Integer.class), id));
+                }
+                if (name != null) {
+                    predList.add(cb.like(root.get("name").as(String.class), "%"+name+"%"));
+                }
+                if (address != null) {
+                    predList.add(cb.like(root.get("address").as(String.class),"%"+ address+"%"));
+                }
+                Predicate[] predArray = new Predicate[predList.size()];
+                predList.toArray(predArray);
+                CriteriaQuery where = query.where(predArray);
+                return null;
 
+        };
+        Sort sort = Sort.by(Sort.Direction.DESC, "name");
+        Pageable pageable = PageRequest.of(0, 4, sort);
+        return customerDao.findAll(specification, pageable);
+    }
 }

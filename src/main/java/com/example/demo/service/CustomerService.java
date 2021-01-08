@@ -10,5 +10,7 @@ public interface CustomerService {
 
     void delete(Long id);
 
+    public Page selectiveSpecification(Long id,String name,String address);
+
     Page findBySpecification();
 }

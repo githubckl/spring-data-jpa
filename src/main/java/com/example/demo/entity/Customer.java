@@ -18,17 +18,28 @@ public class Customer {
     private Long custId;
     @Column(name = "name")
     private String name;
-    @Column(name="sign_date")
+    @Column(name = "sign_date")
     private Date signDate;
+    @Column(name = "address")
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @OneToMany(targetEntity = LinkMan.class)
     @JoinColumn(name = "lkm_cust_id", referencedColumnName = "cust_id")
     private Set<LinkMan> linkMEN = new HashSet<>();
 
     @ManyToMany(targetEntity = Role.class)
-    @JoinTable(name = "customer_role",joinColumns = {@JoinColumn(name = "cust_id",referencedColumnName = "cust_id"),
+    @JoinTable(name = "customer_role", joinColumns = {@JoinColumn(name = "cust_id", referencedColumnName = "cust_id"),
 
-    },inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "role_id")})
-     private Set<Role>roles=new HashSet<>();
+    }, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
+    private Set<Role> roles = new HashSet<>();
 
     public Set<Role> getRoles() {
         return roles;
