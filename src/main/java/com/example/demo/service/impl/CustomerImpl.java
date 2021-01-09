@@ -89,4 +89,9 @@ public class CustomerImpl implements CustomerService {
         Pageable pageable = PageRequest.of(0, 4, sort);
         return customerDao.findAll(specification, pageable);
     }
+
+    @Override
+    public List customers(List<Long> ids) {
+        return customerDao.customers(ids);
+    }
 }

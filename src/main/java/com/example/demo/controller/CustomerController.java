@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -88,7 +89,7 @@ public class CustomerController {
     Page selectiveSpecification(Long id,
                                 String name,
                                 String address
-                                ) {
+    ) {
         return customerImpl.selectiveSpecification(id, name, address);
     }
 
@@ -109,4 +110,13 @@ public class CustomerController {
         customerImpl.save(customer);
     }
 
+    @Transactional
+    @Rollback(value = false)
+    @RequestMapping("customers")
+    List customers() {
+        List<Long> ids = new ArrayList<>();
+        ids.add(11l);
+        ids.add(12l);
+        return customerImpl.customers(ids);
+    }
 }
