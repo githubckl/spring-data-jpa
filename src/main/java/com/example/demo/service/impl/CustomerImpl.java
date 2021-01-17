@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Service
 public class CustomerImpl implements CustomerService {
+    @Autowired
+    EntityManager entityManager;
     @Autowired
     CustomerDao customerDao;
 
@@ -54,6 +58,7 @@ public class CustomerImpl implements CustomerService {
                 Date endTime = sdf.parse("2020-12-28 18:10:00");
                 Predicate between = criteriaBuilder.between(signDate, startTime, endTime);
                 condition = criteriaBuilder.or(ckl, between);
+
                 return condition;
 
 
@@ -65,8 +70,8 @@ public class CustomerImpl implements CustomerService {
     }
 
     @Override
-    public Page selectiveSpecification(Long id,String name,String address) {
-        Specification specification =new Specification() {
+    public Page selectiveSpecification(Long id, String name, String address) {
+        Specification specification = new Specification() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder criteriaBuilder) {
 
@@ -93,5 +98,33 @@ public class CustomerImpl implements CustomerService {
     @Override
     public List customers(List<Long> ids) {
         return customerDao.customers(ids);
+    }
+
+    public Page customerGroup(Long id,String name,String address) {
+        Specification specification = new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predList = new LinkedList<>();
+                if (id != null) {
+                    predList.add(criteriaBuilder.equal(root.get("custId").as(Integer.class), id));
+                }
+                if (name != null) {
+                    predList.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + name + "%"));
+                }
+                if (address != null) {
+                    predList.add(criteriaBuilder.like(root.get("address").as(String.class), "%" + address + "%"));
+                }
+                Predicate[] predArray = new Predicate[predList.size()];
+
+                predList.toArray(predArray);
+                query.where(predArray);
+                query.groupBy(root.get("age"));
+
+                return query.getRestriction();
+            }
+        };
+        Sort sort = Sort.by(Sort.Direction.DESC, "name");
+        Pageable pageable = PageRequest.of(0, 4, sort);
+        return customerDao.findAll(specification, pageable);
     }
 }

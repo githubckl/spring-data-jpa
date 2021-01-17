@@ -19,4 +19,7 @@ public interface CustomerService {
     List customers(List<Long> ids);
 
     Page findBySpecification();
+
+    public Page customerGroup(Long id,String name,String address);
+
 }

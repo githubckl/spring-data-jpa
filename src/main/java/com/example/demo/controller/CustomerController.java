@@ -119,4 +119,13 @@ public class CustomerController {
         ids.add(12l);
         return customerImpl.customers(ids);
     }
+
+    @Transactional
+    @Rollback(value = false)
+    @RequestMapping("customerGroup")
+    Page customerGroup(Long id,
+                       String name,
+                       String address) {
+        return customerImpl.customerGroup(id,name,address);
+    }
 }
